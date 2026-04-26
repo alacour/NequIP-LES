@@ -71,7 +71,7 @@ data[AtomicDataDict.POSITIONS_KEY].requires_grad_(True)
 with torch.enable_grad():
     out = model(data)
 
-charges = out['LES_q'].cpu().numpy().flatten()
+charges = out['LES_q'].detach().cpu().numpy().flatten()
 symbols = atoms.get_chemical_symbols()
 
 if dft is not None:
