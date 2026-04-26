@@ -1,4 +1,5 @@
 import os
+import torch
 import numpy as np
 from ase.io import read
 from nequip.train import EMALightningModule
@@ -50,7 +51,11 @@ from nequip.utils.global_state import set_global_state
 set_global_state(allow_tf32=False)
 
 module = EMALightningModule.load_from_checkpoint(CHECKPOINT, map_location=DEVICE)
-model = module.model
+if isinstance(module.model, torch.nn.ModuleDict):
+    print("model keys:", list(module.model.keys()))
+    model = list(module.model.values())[0]
+else:
+    model = module.model
 model.eval()
 
 transforms = [
