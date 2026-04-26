@@ -7,7 +7,6 @@ from nequip.nn import (
     PerTypeScaleShift,
 )
 from nequip.data import AtomicDataDict
-from allegro.nn import EdgewiseReduce
 from ..nn.les import LatentEwaldSum, AddEnergy
 from .. import _keys
 from typing import Dict, Optional
@@ -94,6 +93,7 @@ def Add_LES_to_Allegro_model(
     compute_bec: bool = False,
     bec_output_index: Optional[int] = None,
 ):
+    from allegro.nn import EdgewiseReduce
     """
     Function to add LES modules to a Allegro model.
     """
