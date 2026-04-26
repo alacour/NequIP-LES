@@ -1,7 +1,9 @@
 import os
-import torch
 import numpy as np
 from ase.io import read
+from nequip.train import EMALightningModule
+from nequip.ase import NequIPCalculator
+from nequip.data.transforms import ChemicalSpeciesToAtomTypeMapper, NeighborListTransform
 import nequip_les  # noqa: registers LES field keys
 
 CHARGE_FIELD_NAMES = {'charge', 'q', 'charges', 'initial_charges', 'mbi_charges'}
@@ -44,29 +46,28 @@ def read_dft_charges(xyz_path, frame_index=0):
             i += 1
 
 
-from nequip.train import EMALightningModule
-from nequip.data import AtomicData
-from nequip.data.transforms import ChemicalSpeciesToAtomTypeMapper, NeighborListTransform
-
 module = EMALightningModule.load_from_checkpoint(CHECKPOINT, map_location=DEVICE)
 model = module.model
 model.eval()
 
+transforms = [
+    ChemicalSpeciesToAtomTypeMapper(model_type_names=TYPE_NAMES),
+    NeighborListTransform(r_max=R_MAX),
+]
+calc = NequIPCalculator(model=model, device=DEVICE, transforms=transforms)
+
 atoms = read(XYZ_PATH, index=FRAME_INDEX)
 dft, field_name = read_dft_charges(XYZ_PATH, frame_index=FRAME_INDEX)
 
-mapper = ChemicalSpeciesToAtomTypeMapper(model_type_names=TYPE_NAMES)
-neighbor = NeighborListTransform(r_max=R_MAX)
+atoms.calc = calc
+atoms.get_potential_energy()
 
-data = AtomicData.from_ase(atoms, r_max=R_MAX)
-data = mapper(data)
-data = neighbor(data)
-data = {k: v.to(DEVICE) if hasattr(v, 'to') else v for k, v in data.items()}
+charges = calc.results.get('LES_q')
+if charges is None:
+    print("LES_q not found in calc.results. Available keys:", list(calc.results.keys()))
+    exit(1)
 
-with torch.no_grad():
-    output = model(data)
-
-charges = output['LES_q'].cpu().numpy().flatten()
+charges = np.array(charges).flatten()
 symbols = atoms.get_chemical_symbols()
 
 if dft is not None:
