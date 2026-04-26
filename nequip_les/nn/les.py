@@ -44,7 +44,7 @@ class LatentEwaldSum(GraphModuleMixin, torch.nn.Module):
         pos = data[AtomicDataDict.POSITIONS_KEY]
         batch = data.get(AtomicDataDict.BATCH_KEY)
         if batch is None:
-            batch = torch.zeros(pos.shape[0], dtype=pos.dtype, device=pos.device)
+            batch = torch.zeros(pos.shape[0], dtype=torch.long, device=pos.device)
 
         if AtomicDataDict.CELL_KEY in data:
             cell = data[AtomicDataDict.CELL_KEY].view(-1, 3, 3)
