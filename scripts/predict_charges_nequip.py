@@ -47,7 +47,7 @@ def read_dft_charges(xyz_path, frame_index=0):
 
 
 from nequip.utils.global_state import set_global_state
-set_global_state(model_dtype='float32', allow_tf32=False)
+set_global_state(allow_tf32=False)
 
 module = EMALightningModule.load_from_checkpoint(CHECKPOINT, map_location=DEVICE)
 model = module.model
