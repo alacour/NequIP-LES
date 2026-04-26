@@ -15,11 +15,11 @@ data:
   seed: 456
 
   split_dataset:
-    - file_path: ../NewtonNet/scripts/electrolyte_data/train/raw/electrolyte_train.xyz
+    - file_path: ${oc.env:SCRATCH}/code/les/NewtonNet/scripts/electrolyte_data/train/raw/electrolyte_train.xyz
       train: 0.9
       val: 0.1
 
-  test_file_path: ../NewtonNet/scripts/electrolyte_data/test/raw/electrolyte_test.xyz
+  test_file_path: ${oc.env:SCRATCH}/code/les/NewtonNet/scripts/electrolyte_data/test/raw/electrolyte_test.xyz
 
   transforms:
     - _target_: nequip.data.transforms.ChemicalSpeciesToAtomTypeMapper
