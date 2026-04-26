@@ -15,4 +15,4 @@ mkdir -p logs
 
 cd $SCRATCH/code/les/NequIP-LES/scripts
 
-$SCRATCH/code/les/nnpackages/nequip/bin/nequip-train config_electrolyte_les.yaml
+$SCRATCH/code/les/nnpackages/nequip/bin/nequip-train --config-name config_electrolyte_les
