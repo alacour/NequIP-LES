@@ -66,8 +66,9 @@ data = from_ase(atoms)
 for t in transforms:
     data = t(data)
 data = {k: v.to(DEVICE) if isinstance(v, torch.Tensor) else v for k, v in data.items()}
+data[AtomicDataDict.POSITIONS_KEY].requires_grad_(True)
 
-with torch.no_grad():
+with torch.enable_grad():
     out = model(data)
 
 charges = out['LES_q'].cpu().numpy().flatten()
