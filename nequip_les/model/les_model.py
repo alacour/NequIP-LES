@@ -1,7 +1,6 @@
 # This file is a part of the `nequip-les` package. Please see LICENSE and README at the root for information on using it.
 from nequip.model import model_builder, NequIPGNNModel
 from nequip.nn import GraphModel, SequentialGraphNetwork
-from allegro.model import AllegroModel
 
 from typing import Dict, Optional
 from .les_output import Add_LES_to_NequIP_model, Add_LES_to_Allegro_model
@@ -44,6 +43,7 @@ def LESModel(
         )
         model.func = energy_model
     elif base_model == "allegro":
+        from allegro.model import AllegroModel
         if "avg_num_neighbors" not in kwargs:
             raise ValueError("avg_num_neighbors must be provided for Allegro model")
         model = AllegroModel(**kwargs)
