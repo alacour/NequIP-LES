@@ -4,6 +4,9 @@
 
 set -e
 
+export CONDA_PKGS_DIRS=$SCRATCH/conda/pkgs
+mkdir -p $SCRATCH/conda/pkgs
+
 module load conda
 source $(conda info --base)/etc/profile.d/conda.sh
 
